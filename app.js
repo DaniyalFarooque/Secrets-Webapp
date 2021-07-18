@@ -27,7 +27,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true});
+mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 
 const userSchema = new mongoose.Schema ({
@@ -42,6 +42,9 @@ userSchema.plugin(findOrCreate);
 
 const User = new mongoose.model("User", userSchema);
 
+// use static authenticate method of model in LocalStrategy
+// passport.use(new LocalStrategy(User.authenticate()));
+// CHANGE: USE "createStrategy" INSTEAD OF "authenticate"
 passport.use(User.createStrategy());
 
 passport.serializeUser(function(user, done) {
@@ -97,6 +100,7 @@ app.get("/secrets", function(req, res){
     if (err){
       console.log(err);
     } else {
+  
       if (foundUsers) {
         res.render("secrets", {usersWithSecrets: foundUsers});
       }
@@ -115,9 +119,7 @@ app.get("/submit", function(req, res){
 app.post("/submit", function(req, res){
   const submittedSecret = req.body.secret;
 
-//Once the user is authenticated and their session gets saved, their user details are saved to req.user.
-  // console.log(req.user.id);
-
+  //Once the user is authenticated and their session gets saved, their user details are saved to req.user.
   User.findById(req.user.id, function(err, foundUser){
     if (err) {
       console.log(err);
@@ -170,7 +172,6 @@ app.post("/login", function(req, res){
   });
 
 });
-
 
 app.listen(3000, function() {
   console.log("Server started on port 3000.");
