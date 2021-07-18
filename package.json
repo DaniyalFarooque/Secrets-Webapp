@@ -1,5 +1,5 @@
 {
-  "name": "Secrets",
+  "name": "secrets",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -23,5 +23,8 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": "14.15.5"
+  }
 }
